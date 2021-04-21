@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Preloader } from './components/Preloader'
+import { PlayerPage } from './pages/PlayerPage'
+import { initializeApp } from './store/app-reducer'
+import { AppStateType, DispatchType } from './types/types'
 
-function App() {
+export const App: React.FC = () => {
+  const isInitializedApp = useSelector(
+    (state: AppStateType) => state.appPage.isInitializedApp,
+  )
+  const dispatch = useDispatch<DispatchType>()
+
+  useEffect(() => {
+    dispatch(initializeApp())
+    // eslint-disable-next-line
+  }, [])
+
+  if (!isInitializedApp) return <Preloader />
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <PlayerPage />
+    </>
+  )
 }
-
-export default App;

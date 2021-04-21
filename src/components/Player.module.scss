@@ -1,0 +1,18 @@
+$widthVideo: 400px;
+$heightVideo: $widthVideo / 4 * 3;
+.video {
+  width: $widthVideo;
+  height: $heightVideo;
+}
+
+.video:focus {
+  border: none;
+  outline: none;
+}
+
+@media (max-width: 575px) {
+  .video {
+    width: $widthVideo / 1.5;
+    height: $heightVideo / 1.5;
+  }
+}

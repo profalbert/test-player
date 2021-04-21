@@ -1,0 +1,34 @@
+.container {
+  padding: 50px 20px;
+  display: grid;
+  grid-auto-flow: row;
+  justify-content: center;
+}
+
+.title {
+  text-align: center;
+}
+
+.buttonsWrap {
+  margin-top: 10px;
+  display: grid;
+}
+
+.buttonsBlock {
+  margin: 20px 0px;
+}
+
+.button {
+  padding: 5px 10px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  margin-left: 15px;
+  color: #000;
+  background-color: #eee;
+}
+
+@media (max-width: 575px) {
+  .container {
+    padding: 30px 15px;
+  }
+}
