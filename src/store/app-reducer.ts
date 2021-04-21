@@ -33,5 +33,5 @@ export const appActions = {
 export const initializeApp = (): ThunkType => async (dispatch) => {
   setTimeout(() => {
     dispatch(appActions.initializedAppSuccess())
-  }, 1000 * 1) // делаю задержку, чтобы было видно preloader
+  }, 1000 * 1) // todo: делаю задержку, чтобы было видно preloader
 }

@@ -1,7 +1,8 @@
-import { useRef, useEffect, useCallback } from 'react'
+import { useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Player } from '../components/Player'
-import { AppStateType } from '../types/types'
+import { back, forward, useKeydown } from '../../components/Player/functions'
+import { Player } from '../../components/Player/Player'
+import { AppStateType } from '../../types/types'
 import s from './PlayerPage.module.scss'
 
 export const PlayerPage: React.FC = () => {
@@ -9,16 +10,7 @@ export const PlayerPage: React.FC = () => {
   const url = useSelector((state: AppStateType) => state.playerPage.url)
   const poster = useSelector((state: AppStateType) => state.playerPage.poster)
 
-  const keydownCallback = useCallback((e: KeyboardEvent) => {
-    e.preventDefault()
-    if (e.code === 'ArrowLeft') {
-      backHandler()
-    } else if (e.code === 'ArrowRight') {
-      forwardHandler()
-    } else if (e.code === 'Space') {
-      video.current!.paused ? video.current!.play() : video.current!.pause()
-    }
-  }, [])
+  const keydownCallback = useKeydown(video)
 
   useEffect(() => {
     window.addEventListener('keydown', keydownCallback)
@@ -27,13 +19,9 @@ export const PlayerPage: React.FC = () => {
     }
   }, [keydownCallback])
 
-  const backHandler = () => {
-    video.current!.currentTime -= 10
-  }
+  const backHandler = () => back(video)
 
-  const forwardHandler = () => {
-    video.current!.currentTime += 10
-  }
+  const forwardHandler = () => forward(video)
 
   return (
     <>

@@ -5,7 +5,6 @@ import { Dispatch } from 'react'
 import { PlayerActionsTypes } from '../store/player-reducer'
 
 // types from redux
-type ActionsTypes = AppActionsTypes | PlayerActionsTypes
 type RootReducerType = typeof rootReducer
 export type AppStateType = ReturnType<RootReducerType>
 
@@ -15,7 +14,7 @@ export type InferActionsTypes<T> = T extends {
   ? U
   : never
 
-export type GetStateType = () => AppStateType
+type ActionsTypes = AppActionsTypes | PlayerActionsTypes
 export type DispatchType = Dispatch<ActionsTypes | ThunkType>
 export type ThunkType = ThunkAction<
   Promise<void>,

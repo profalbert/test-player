@@ -19,7 +19,8 @@ export const playerReducer = (
 export type PlayerActionsTypes = InferActionsTypes<typeof playerActions>
 
 export const playerActions = {
-  initializedAppSuccess: () =>
+  // todo: PLUG - временная заглушка
+  PLUG: () =>
     ({
       type: 'player/PLUG',
     } as const),
