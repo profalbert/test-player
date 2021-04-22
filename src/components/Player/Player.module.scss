@@ -3,11 +3,65 @@ $heightVideo: $widthVideo / 4 * 3;
 .video {
   width: $widthVideo;
   height: $heightVideo;
+  // object-fit: cover;
+  &::-webkit-media-controls {
+    display: none;
+  }
 }
 
 .video:focus {
   border: none;
   outline: none;
+}
+
+// .video:fullscreen {
+//   .customControls {
+//     display: block;
+//     position: absolute;
+//     bottom: 0;
+//     left: 0;
+//     right: 0;
+//     padding: 5px;
+//     padding-bottom: 15px;
+//     background-color: #bbbbbbbf;
+//     z-index: 100000000000000000000000000000000000000;
+//   }
+// }
+
+.playerWrap {
+  position: relative;
+  display: grid;
+}
+.playerWrap:hover {
+  .customControls {
+    display: block;
+  }
+}
+
+.progressbarWrap {
+  margin: 0px 20px;
+}
+
+.progressbar {
+  width: calc(100%);
+  display: grid;
+}
+
+.customControls {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  padding-bottom: 15px;
+  background-color: #bbbbbbbf;
+}
+
+@media (max-width: 767px) {
+  .customControls {
+    display: block;
+  }
 }
 
 @media (max-width: 575px) {

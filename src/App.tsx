@@ -1,19 +1,14 @@
-import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useState, useEffect } from 'react'
 import { Preloader } from './components/Preloader/Preloader'
 import { PlayerPage } from './pages/PlayerPage/PlayerPage'
-import { initializeApp } from './store/app-reducer'
-import { AppStateType, DispatchType } from './types/types'
 
 export const App: React.FC = () => {
-  const isInitializedApp = useSelector(
-    (state: AppStateType) => state.appPage.isInitializedApp,
-  )
-  const dispatch = useDispatch<DispatchType>()
+  const [isInitializedApp, setIsInitializedApp] = useState<boolean>(false)
 
   useEffect(() => {
-    dispatch(initializeApp())
-    // eslint-disable-next-line
+    setTimeout(() => {
+      setIsInitializedApp(true)
+    }, 1000)
   }, [])
 
   if (!isInitializedApp) return <Preloader />
