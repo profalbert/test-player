@@ -11,7 +11,13 @@ export const App: React.FC = () => {
     }, 1000)
   }, [])
 
-  if (!isInitializedApp) return <Preloader />
+  if (!isInitializedApp) {
+    return (
+      <div className={'preloaderWrap'}>
+        <Preloader />
+      </div>
+    )
+  }
 
   return (
     <>

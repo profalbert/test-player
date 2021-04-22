@@ -1,71 +1,17 @@
-import { RefObject, useCallback } from 'react'
+import { RefObject } from 'react'
 
-// custom hooks
-export const useKeydown = (
+export const volume = (
   ref: RefObject<HTMLVideoElement>,
-  isPaused: boolean,
-  setIsPaused: (isPaused: boolean) => void,
-  time: number = 10,
+  isVolume: boolean,
+  setIsVolume: (isVolume: boolean) => void,
 ) => {
-  return useCallback(
-    (e: KeyboardEvent) => {
-      e.preventDefault()
-      if (e.code === 'ArrowLeft') {
-        replay(ref, time)
-      } else if (e.code === 'ArrowRight') {
-        forward(ref, time)
-      } else if (e.code === 'Space') {
-        playback(ref, isPaused, setIsPaused)
-      }
-    },
-    [ref, isPaused, setIsPaused, time],
-  )
-}
-
-export const useTimeupdate = (
-  ref: RefObject<HTMLVideoElement>,
-  progressValue: number,
-  setIsPaused: (isPaused: boolean) => void,
-  setProgressValue: (progressValue: number) => void,
-) => {
-  return useCallback(
-    (e: Event) => {
-      if (ref.current && ref.current.duration === ref.current.currentTime) {
-        setIsPaused(true)
-      }
-
-      if (
-        Math.floor(ref.current!.currentTime) !==
-        Math.floor(ref.current!.duration / (maxValue / progressValue))
-      ) {
-        const value = Math.floor(
-          maxValue / (ref.current!.duration / ref.current!.currentTime),
-        )
-        setProgressValue(value)
-      }
-    },
-    [ref, progressValue, setIsPaused, setProgressValue],
-  )
-}
-
-export const useFullscreen = (
-  setIsFullscreen: (isFullscreen: boolean) => void,
-) => {
-  return useCallback(
-    () => {
-      if (document.fullscreenElement) {
-        setIsFullscreen(true)
-      } else {
-        setIsFullscreen(false)
-      }
-    },
-    [setIsFullscreen],
-  )
-}
-// ==========
-
-export const volume = (ref: RefObject<HTMLVideoElement>, isVolume: boolean) => {
-  ref.current!.volume = isVolume ? 0 : 1
+  if (isVolume) {
+    ref.current!.volume = 0
+    setIsVolume(false)
+  } else {
+    ref.current!.volume = 1
+    setIsVolume(true)
+  }
 }
 
 export const playback = (
@@ -93,8 +39,17 @@ export const forward = (
   ref.current!.currentTime += time
 }
 
-export const fullscreen = (ref: RefObject<HTMLVideoElement>) => {
-  ref.current!.requestFullscreen()
+export const fullscreen = (
+  isFullscreen: boolean,
+  setIsFullscreen: (isFullscreen: boolean) => void,
+) => {
+  if (isFullscreen) {
+    document.exitFullscreen()
+    setIsFullscreen(false)
+  } else {
+    document.documentElement.requestFullscreen()
+    setIsFullscreen(true)
+  }
 }
 
 export const minValue = 0
@@ -103,7 +58,9 @@ export const maxValue = 200
 export const progressbar = (
   ref: RefObject<HTMLVideoElement>,
   value: number,
+  setProgressValue: (progressValue: number) => void,
 ) => {
   const newCurrentTime = ref.current!.duration / (maxValue / value)
   ref.current!.currentTime = newCurrentTime
+  setProgressValue(value)
 }

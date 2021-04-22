@@ -1,5 +1,4 @@
-import { useRef, useEffect } from 'react'
-import { useKeydown } from '../../components/Player/functions'
+import { useRef } from 'react'
 import { Player } from '../../components/Player/Player'
 import s from './PlayerPage.module.scss'
 import posterUrl from '../../assets/img/poster.jpg'

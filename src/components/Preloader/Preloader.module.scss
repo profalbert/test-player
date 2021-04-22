@@ -2,8 +2,11 @@
   display: grid;
   align-items: center;
   justify-items: center;
-  width: 100vw;
-  height: 100vh;
+}
+
+.preloader img {
+  width: 100px;
+  height: 100px;
 }
 
 .title {

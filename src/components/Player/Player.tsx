@@ -1,4 +1,4 @@
-import React, { RefObject, useCallback, useEffect, useState } from 'react'
+import React, { RefObject, useState } from 'react'
 import s from './Player.module.scss'
 import {
   replay,
@@ -9,11 +9,13 @@ import {
   minValue,
   maxValue,
   progressbar,
-  useTimeupdate,
-  useFullscreen,
-  useKeydown,
 } from './functions'
-
+import {
+  useTimeupdateEffect,
+  useFullscreenEffect,
+  useBufferingEffect,
+  useKeydownEffect,
+} from './hooks'
 import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
 import VolumeUp from '@material-ui/icons/VolumeUp'
@@ -25,6 +27,7 @@ import FullscreenExitRounded from '@material-ui/icons/FullscreenExitRounded'
 import Replay10Rounded from '@material-ui/icons/Replay10Rounded'
 import Forward10Rounded from '@material-ui/icons/Forward10Rounded'
 import { PrettoSlider, useStyles } from './Styles'
+import { Preloader } from '../Preloader/Preloader'
 
 type PropsType = {
   refVideo: RefObject<HTMLVideoElement>
@@ -41,98 +44,44 @@ export const Player: React.FC<PropsType> = React.memo(
     const [isBuffered, setIsBuffered] = useState<boolean>(false)
     const [progressValue, setProgressValue] = useState<number>(0)
 
-    // timeupdate (for progressbar)
-    const timeupdateCallback = useTimeupdate(
-      refVideo,
-      progressValue,
-      setIsPaused,
-      setProgressValue,
-    )
+    // custom hook effect for timeupdate (for progressbar)
+    useTimeupdateEffect(refVideo, progressValue, setIsPaused, setProgressValue)
 
-    useEffect(() => {
-      const saveRefVideo = refVideo.current!
-      saveRefVideo.addEventListener('timeupdate', timeupdateCallback)
-      return () => {
-        saveRefVideo.removeEventListener('timeupdate', timeupdateCallback)
-      }
-    }, [refVideo, timeupdateCallback])
-    // ==========
+    // custom hook effect for fullscreen
+    useFullscreenEffect(setIsFullscreen)
 
-    // fullscreen
-    const fullscreenCallback = useFullscreen(setIsFullscreen)
+    // custom hook effect for buffering
+    useBufferingEffect(refVideo, setIsBuffered)
 
-    useEffect(() => {
-      window.addEventListener('fullscreenchange', fullscreenCallback)
-      return () => {
-        window.removeEventListener('fullscreenchange', fullscreenCallback)
-      }
-    }, [fullscreenCallback])
-    // ==========
+    // custom hook effect for keydown
+    useKeydownEffect(refVideo, isPaused, setIsPaused)
 
-    // // buffering
-    // const bufferingCallback = useCallback((e: Event) => {
-    //   console.log(e)
-    // }, [])
-
-    // useEffect(() => {
-    //   const saveRefVideo = refVideo.current!
-    //   saveRefVideo.addEventListener('waiting', bufferingCallback)
-    //   return () => {
-    //     saveRefVideo.removeEventListener('waiting', bufferingCallback)
-    //   }
-    // }, [refVideo, bufferingCallback])
-    // // ==========
-
-    // keydown
-    const keydownCallback = useKeydown(refVideo, isPaused, setIsPaused)
-
-    useEffect(() => {
-      window.addEventListener('keydown', keydownCallback)
-      return () => {
-        window.removeEventListener('keydown', keydownCallback)
-      }
-    }, [keydownCallback])
-    // ==========
-
-    const volumeHandler = () => {
-      volume(refVideo, isVolume)
-      setIsVolume((prev) => !prev)
-    }
-
-    const playbackHandler = () => {
-      playback(refVideo, isPaused, setIsPaused)
-    }
-
-    const replayHandler = () => {
-      replay(refVideo)
-    }
-
-    const forwardHandler = () => {
-      forward(refVideo)
-    }
-
-    const fullscreenHandler = () => {
-      fullscreen(refVideo)
-      setIsFullscreen((prev) => !prev)
-    }
+    const volumeHandler = () => volume(refVideo, isVolume, setIsVolume)
+    const playbackHandler = () => playback(refVideo, isPaused, setIsPaused)
+    const replayHandler = () => replay(refVideo)
+    const forwardHandler = () => forward(refVideo)
+    const fullscreenHandler = () => fullscreen(isFullscreen, setIsFullscreen)
 
     const progressbarHandler = (e: any, value: number | number[]) => {
       if (typeof value === 'number' && progressValue !== value) {
-        progressbar(refVideo, value)
-        setProgressValue(value)
+        progressbar(refVideo, value, setProgressValue)
       }
     }
 
     return (
       <>
-        <div className={s.playerWrap}>
-          <video className={s.video} ref={refVideo} poster={poster}>
-            <source src={url} type={'video/mp4'} />
-            Your browser doesn't support HTML5 video tag.
-          </video>
+        <div className={isFullscreen ? s.playerWrapFullscreen : ''}>
+          <div className={s.playerWrap}>
+            <video className={s.video} ref={refVideo} poster={poster}>
+              <source src={url} type={'video/mp4'} />
+              Your browser doesn't support HTML5 video tag.
+            </video>
 
-          <div className={s.customControls}>
-            <div>
+            <div className={s.preloaderBlock}>
+              {isBuffered ? <Preloader /> : <></>}
+            </div>
+
+            <div className={s.customControls}>
               <Grid className={classes.container} container>
                 <Grid item>
                   <IconButton onClick={volumeHandler} color='primary'>
@@ -160,17 +109,17 @@ export const Player: React.FC<PropsType> = React.memo(
                   </IconButton>
                 </Grid>
               </Grid>
-            </div>
 
-            <div className={s.progressbarWrap}>
-              <div className={s.progressbar}>
-                <PrettoSlider
-                  className={classes.progressbarSlider}
-                  onChange={progressbarHandler}
-                  min={minValue}
-                  max={maxValue}
-                  value={progressValue}
-                />
+              <div className={s.progressbarWrap}>
+                <div className={s.progressbar}>
+                  <PrettoSlider
+                    className={classes.progressbarSlider}
+                    onChange={progressbarHandler}
+                    min={minValue}
+                    max={maxValue}
+                    value={progressValue}
+                  />
+                </div>
               </div>
             </div>
           </div>

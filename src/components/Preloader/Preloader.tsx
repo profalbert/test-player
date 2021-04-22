@@ -1,9 +1,10 @@
 import s from './Preloader.module.scss'
+import preloader from '../../assets/icons/preloader.svg'
 
 export const Preloader: React.FC = () => {
   return (
     <div className={s.preloader}>
-      <h2 className={s.title}>Loading...</h2>
+      <img src={preloader} alt='preloader' />
     </div>
   )
 }
